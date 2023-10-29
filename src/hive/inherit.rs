@@ -32,15 +32,7 @@ impl Inherit {
             path: path.to_string(),
         }
     }
-    pub fn nixpkgs() -> Self {
-        Self {
-            name: String::from("nixpkgs"),
-            path: String::from("inputs"),
-        }
-    }
-}
 
-impl FormatInto<Nix> for Inherit {
     /// ```
     /// use genco::prelude::*;
     /// use honey::hive::*;
@@ -61,6 +53,42 @@ impl FormatInto<Nix> for Inherit {
     /// );
     /// # Ok::<_, genco::fmt::Error>(())
     /// ```
+    pub fn nixpkgs() -> Self {
+        Self {
+            name: String::from("nixpkgs"),
+            path: String::from("inputs"),
+        }
+    }
+
+    /// ```
+    /// use genco::prelude::*;
+    /// use honey::hive::*;
+    ///
+    /// let disko = Inherit::disko();
+    ///
+    /// let toks = quote!($disko);
+    ///
+    /// assert_eq!(
+    ///     vec![
+    ///         "let",
+    ///         "    inherit (inputs) disko;",
+    ///         "in",
+    ///         "",
+    ///         "disko",
+    ///     ],
+    ///     toks.to_file_vec()?
+    /// );
+    /// # Ok::<_, genco::fmt::Error>(())
+    /// ```
+    pub fn disko() -> Self {
+        Self {
+            name: String::from("disko"),
+            path: String::from("inputs"),
+        }
+    }
+}
+
+impl FormatInto<Nix> for Inherit {
     fn format_into(self, tokens: &mut Tokens<Nix>) {
         let inherit = nix::inherit(self.path, self.name);
         tokens.append(inherit);
