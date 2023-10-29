@@ -90,6 +90,52 @@ impl Import {
             name: String::from("nixosModules.disko"),
         }
     }
+
+    /// ```
+    /// use genco::prelude::*;
+    /// use honey::hive::*;
+    ///
+    /// let my_hardware_profile = Import::hardware_profiles("my-hardware-profile");
+    ///
+    /// let toks = quote!($my_hardware_profile);
+    ///
+    /// assert_eq!(
+    ///     vec![
+    ///         "cell.hardwareProfiles.my-hardware-profile",
+    ///     ],
+    ///     toks.to_file_vec()?
+    /// );
+    /// # Ok::<_, genco::fmt::Error>(())
+    /// ```
+    pub fn hardware_profiles(name: &str) -> Self {
+        Self {
+            inherit: None,
+            name: format!("cell.hardwareProfiles.{}", name),
+        }
+    }
+
+    /// ```
+    /// use genco::prelude::*;
+    /// use honey::hive::*;
+    ///
+    /// let my_nixos_profile = Import::nixos_profiles("my-nixos-profile");
+    ///
+    /// let toks = quote!($my_nixos_profile);
+    ///
+    /// assert_eq!(
+    ///     vec![
+    ///         "cell.nixosProfiles.my-nixos-profile",
+    ///     ],
+    ///     toks.to_file_vec()?
+    /// );
+    /// # Ok::<_, genco::fmt::Error>(())
+    /// ```
+    pub fn nixos_profiles(name: &str) -> Self {
+        Self {
+            inherit: None,
+            name: format!("cell.nixosProfiles.{}", name),
+        }
+    }
 }
 
 impl FormatInto<Nix> for Import {
@@ -99,5 +145,42 @@ impl FormatInto<Nix> for Import {
         } else {
             quote_in!(*tokens => $(self.name))
         }
+    }
+}
+
+pub struct Imports(pub Vec<Import>);
+
+impl FormatInto<Nix> for Imports {
+    /// ```
+    /// use genco::prelude::*;
+    /// use honey::hive::*;
+    ///
+    /// let imports = Imports(vec![
+    ///     Import::hardware_profiles("my-hardware-profile"),
+    ///     Import::nixos_profiles("my-nix-profile"),
+    /// ]);
+    ///
+    /// let toks = quote!($imports);
+    ///
+    /// assert_eq!(
+    ///     vec![
+    ///         "[",
+    ///         "    cell.hardwareProfiles.my-hardware-profile",
+    ///         "    cell.nixosProfiles.my-nix-profile",
+    ///         "]"
+    ///     ],
+    ///     toks.to_file_vec()?
+    /// );
+    /// # Ok::<_, genco::fmt::Error>(())
+    /// ```
+    fn format_into(self, tokens: &mut Tokens<Nix>) {
+        tokens.append("[");
+        tokens.indent();
+        for import in self.0 {
+            tokens.append(import);
+            tokens.push();
+        }
+        tokens.unindent();
+        tokens.append("]");
     }
 }
