@@ -136,6 +136,29 @@ impl Import {
             name: format!("cell.nixosProfiles.{}", name),
         }
     }
+
+    /// ```
+    /// use genco::prelude::*;
+    /// use honey::hive::*;
+    ///
+    /// let my_disko_configurations = Import::disko_configurations("my-disko-configurations");
+    ///
+    /// let toks = quote!($my_disko_configurations);
+    ///
+    /// assert_eq!(
+    ///     vec![
+    ///         "cell.diskoConfigurations.my-disko-configurations",
+    ///     ],
+    ///     toks.to_file_vec()?
+    /// );
+    /// # Ok::<_, genco::fmt::Error>(())
+    /// ```
+    pub fn disko_configurations(name: &str) -> Self {
+        Self {
+            inherit: None,
+            name: format!("cell.diskoConfigurations.{}", name),
+        }
+    }
 }
 
 impl FormatInto<Nix> for Import {
