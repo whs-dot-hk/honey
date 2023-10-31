@@ -117,6 +117,7 @@ impl FormatInto<Nix> for NixosConfigurations {
     ///
     /// let nixos_configurations = NixosConfigurations(vec![
     ///     Configurations::new_nixos_configurations("machine1"),
+    ///     Configurations::new_nixos_configurations("machine2"),
     /// ]);
     ///
     /// let toks = quote!($nixos_configurations);
@@ -136,7 +137,16 @@ impl FormatInto<Nix> for NixosConfigurations {
     ///         "            cell.homeConfigurations.machine1",
     ///         "            cell.nixosProfiles.machine1",
     ///         "        ];",
-    ///         "    }",
+    ///         "    };",
+    ///         "    machine2 = {",
+    ///         "        imports = [",
+    ///         "            disko.nixosModules.disko",
+    ///         "            cell.diskoConfigurations.machine2",
+    ///         "            cell.hardwareProfiles.machine2",
+    ///         "            cell.homeConfigurations.machine2",
+    ///         "            cell.nixosProfiles.machine2",
+    ///         "        ];",
+    ///         "    };",
     ///         "}",
     ///     ],
     ///     toks.to_file_vec()?
@@ -147,7 +157,8 @@ impl FormatInto<Nix> for NixosConfigurations {
         tokens.append("{");
         tokens.indent();
         for configurations in self.0 {
-            quote_in!(*tokens => $(configurations.name.clone()) = $configurations)
+            quote_in!(*tokens => $(configurations.name.clone()) = $configurations;);
+            tokens.push();
         }
         tokens.unindent();
         tokens.append("}");
