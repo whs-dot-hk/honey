@@ -7,6 +7,8 @@ pub enum ConfigurationType {
 
 pub struct Configurations {
     pub imports: Imports,
+    /// Name do **not** included in quote.
+    pub name: String,
 }
 
 impl Configurations {
@@ -14,7 +16,7 @@ impl Configurations {
     /// use genco::prelude::*;
     /// use honey::hive::*;
     ///
-    /// let configurations = Configurations::new(vec![
+    /// let configurations = Configurations::new(String::from("dummy"), vec![
     ///     ConfigurationType::Import(Import::disko()),
     ///     ConfigurationType::Import(Import::disko_configurations("my-disko-configurations")),
     /// ]);
@@ -38,7 +40,7 @@ impl Configurations {
     /// );
     /// # Ok::<_, genco::fmt::Error>(())
     /// ```
-    pub fn new(configurations: Vec<ConfigurationType>) -> Self {
+    pub fn new(name: String, configurations: Vec<ConfigurationType>) -> Self {
         let mut imports = Vec::new();
         for c in configurations {
             match c {
@@ -47,6 +49,7 @@ impl Configurations {
         }
         Self {
             imports: Imports(imports),
+            name: name,
         }
     }
 }
@@ -61,6 +64,7 @@ impl FormatInto<Nix> for Configurations {
     ///         Import::disko(),
     ///         Import::disko_configurations("my-disko-configurations"),
     ///     ]),
+    ///     name: String::from("dummy"),
     /// };
     ///
     /// let toks = quote!($configurations);
