@@ -68,9 +68,9 @@ impl Import {
     /// use genco::prelude::*;
     /// use honey::hive::*;
     ///
-    /// let disko = Import::disko();
+    /// let disko_module = Import::disko_module();
     ///
-    /// let toks = quote!($disko);
+    /// let toks = quote!($disko_module);
     ///
     /// assert_eq!(
     ///     vec![
@@ -84,7 +84,7 @@ impl Import {
     /// );
     /// # Ok::<_, genco::fmt::Error>(())
     /// ```
-    pub fn disko() -> Self {
+    pub fn disko_module() -> Self {
         Self {
             inherit: Some(Inherit::disko()),
             name: String::from("nixosModules.disko"),
@@ -157,6 +157,13 @@ impl Import {
         Self {
             inherit: None,
             name: format!("cell.diskoConfigurations.{}", name),
+        }
+    }
+
+    pub fn home_configurations(name: &str) -> Self {
+        Self {
+            inherit: None,
+            name: format!("cell.homeConfigurations.{}", name),
         }
     }
 }
