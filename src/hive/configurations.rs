@@ -17,8 +17,8 @@ impl Configurations {
     /// use honey::hive::*;
     ///
     /// let configurations = Configurations::new("dummy", vec![
+    ///     ConfigurationType::Import(Import::cell_disko_configurations("my-disko-configurations")),
     ///     ConfigurationType::Import(Import::disko_module()),
-    ///     ConfigurationType::Import(Import::disko_configurations("my-disko-configurations")),
     /// ]);
     ///
     /// let toks = quote!($configurations);
@@ -31,8 +31,8 @@ impl Configurations {
     ///         "",
     ///         "{",
     ///         "    imports = [",
-    ///         "        disko.nixosModules.disko",
     ///         "        cell.diskoConfigurations.my-disko-configurations",
+    ///         "        disko.nixosModules.disko",
     ///         "    ];",
     ///         "}"
     ///     ],
@@ -56,11 +56,12 @@ impl Configurations {
     pub fn new_nixos_configurations(name: &str) -> Self {
         Self {
             imports: Imports(vec![
+                Import::cell_disko_configurations(name),
+                Import::cell_hardware_profiles(name),
+                Import::cell_home_configurations(name),
+                Import::cell_nixos_modules(name),
+                Import::cell_nixos_profiles(name),
                 Import::disko_module(),
-                Import::disko_configurations(name),
-                Import::hardware_profiles(name),
-                Import::home_configurations(name),
-                Import::nixos_profiles(name),
             ]),
             name: String::from(name),
         }
@@ -74,8 +75,8 @@ impl FormatInto<Nix> for Configurations {
     ///
     /// let configurations = Configurations {
     ///     imports: Imports(vec![
+    ///         Import::cell_disko_configurations("my-disko-configurations"),
     ///         Import::disko_module(),
-    ///         Import::disko_configurations("my-disko-configurations"),
     ///     ]),
     ///     name: String::from("dummy"),
     /// };
@@ -90,8 +91,8 @@ impl FormatInto<Nix> for Configurations {
     ///         "",
     ///         "{",
     ///         "    imports = [",
-    ///         "        disko.nixosModules.disko",
     ///         "        cell.diskoConfigurations.my-disko-configurations",
+    ///         "        disko.nixosModules.disko",
     ///         "    ];",
     ///         "}"
     ///     ],
@@ -131,20 +132,22 @@ impl FormatInto<Nix> for NixosConfigurations {
     ///         "{",
     ///         "    machine1 = {",
     ///         "        imports = [",
-    ///         "            disko.nixosModules.disko",
     ///         "            cell.diskoConfigurations.machine1",
     ///         "            cell.hardwareProfiles.machine1",
     ///         "            cell.homeConfigurations.machine1",
+    ///         "            cell.nixosModules.machine1",
     ///         "            cell.nixosProfiles.machine1",
+    ///         "            disko.nixosModules.disko",
     ///         "        ];",
     ///         "    };",
     ///         "    machine2 = {",
     ///         "        imports = [",
-    ///         "            disko.nixosModules.disko",
     ///         "            cell.diskoConfigurations.machine2",
     ///         "            cell.hardwareProfiles.machine2",
     ///         "            cell.homeConfigurations.machine2",
+    ///         "            cell.nixosModules.machine2",
     ///         "            cell.nixosProfiles.machine2",
+    ///         "            disko.nixosModules.disko",
     ///         "        ];",
     ///         "    };",
     ///         "}",

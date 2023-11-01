@@ -95,7 +95,7 @@ impl Import {
     /// use genco::prelude::*;
     /// use honey::hive::*;
     ///
-    /// let my_hardware_profile = Import::hardware_profiles("my-hardware-profile");
+    /// let my_hardware_profile = Import::cell_hardware_profiles("my-hardware-profile");
     ///
     /// let toks = quote!($my_hardware_profile);
     ///
@@ -107,7 +107,7 @@ impl Import {
     /// );
     /// # Ok::<_, genco::fmt::Error>(())
     /// ```
-    pub fn hardware_profiles(name: &str) -> Self {
+    pub fn cell_hardware_profiles(name: &str) -> Self {
         Self {
             inherit: None,
             name: format!("cell.hardwareProfiles.{}", name),
@@ -118,7 +118,7 @@ impl Import {
     /// use genco::prelude::*;
     /// use honey::hive::*;
     ///
-    /// let my_nixos_profile = Import::nixos_profiles("my-nixos-profile");
+    /// let my_nixos_profile = Import::cell_nixos_profiles("my-nixos-profile");
     ///
     /// let toks = quote!($my_nixos_profile);
     ///
@@ -130,7 +130,7 @@ impl Import {
     /// );
     /// # Ok::<_, genco::fmt::Error>(())
     /// ```
-    pub fn nixos_profiles(name: &str) -> Self {
+    pub fn cell_nixos_profiles(name: &str) -> Self {
         Self {
             inherit: None,
             name: format!("cell.nixosProfiles.{}", name),
@@ -141,7 +141,7 @@ impl Import {
     /// use genco::prelude::*;
     /// use honey::hive::*;
     ///
-    /// let my_disko_configurations = Import::disko_configurations("my-disko-configurations");
+    /// let my_disko_configurations = Import::cell_disko_configurations("my-disko-configurations");
     ///
     /// let toks = quote!($my_disko_configurations);
     ///
@@ -153,19 +153,27 @@ impl Import {
     /// );
     /// # Ok::<_, genco::fmt::Error>(())
     /// ```
-    pub fn disko_configurations(name: &str) -> Self {
+    pub fn cell_disko_configurations(name: &str) -> Self {
         Self {
             inherit: None,
             name: format!("cell.diskoConfigurations.{}", name),
         }
     }
 
-    pub fn home_configurations(name: &str) -> Self {
+    pub fn cell_home_configurations(name: &str) -> Self {
         Self {
             inherit: None,
             name: format!("cell.homeConfigurations.{}", name),
         }
     }
+
+    pub fn cell_nixos_modules(name: &str) -> Self {
+        Self {
+            inherit: None,
+            name: format!("cell.nixosModules.{}", name),
+        }
+    }
+
 }
 
 impl FormatInto<Nix> for Import {
@@ -186,8 +194,8 @@ impl FormatInto<Nix> for Imports {
     /// use honey::hive::*;
     ///
     /// let imports = Imports(vec![
-    ///     Import::hardware_profiles("my-hardware-profile"),
-    ///     Import::nixos_profiles("my-nix-profile"),
+    ///     Import::cell_hardware_profiles("my-hardware-profile"),
+    ///     Import::cell_nixos_profiles("my-nix-profile"),
     /// ]);
     ///
     /// let toks = quote!($imports);
