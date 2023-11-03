@@ -64,6 +64,33 @@ impl Inherit {
     /// use genco::prelude::*;
     /// use honey::hive::*;
     ///
+    /// let home_manager = Inherit::home_manager();
+    ///
+    /// let toks = quote!($home_manager);
+    ///
+    /// assert_eq!(
+    ///     vec![
+    ///         "let",
+    ///         "    inherit (inputs) home-manager;",
+    ///         "in",
+    ///         "",
+    ///         "home-manager",
+    ///     ],
+    ///     toks.to_file_vec()?
+    /// );
+    /// # Ok::<_, genco::fmt::Error>(())
+    /// ```
+    pub fn home_manager() -> Self {
+        Self {
+            name: String::from("home-manager"),
+            path: String::from("inputs"),
+        }
+    }
+
+    /// ```
+    /// use genco::prelude::*;
+    /// use honey::hive::*;
+    ///
     /// let disko = Inherit::disko();
     ///
     /// let toks = quote!($disko);
@@ -85,6 +112,14 @@ impl Inherit {
             name: String::from("disko"),
             path: String::from("inputs"),
         }
+    }
+}
+
+impl Into<nix::Tokens> for Inherit {
+    fn into(self) -> nix::Tokens {
+        let mut tokens = nix::Tokens::new();
+        tokens.append(self);
+        tokens
     }
 }
 

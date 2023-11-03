@@ -5,7 +5,7 @@ version = 3
 [[package]]
 name = "genco"
 version = "0.17.7"
-source = "git+https://github.com/whs-dot-hk/genco.git?branch=test#b1cd6b77ecd399d4947b54de27b40c6e85ecdb6e"
+source = "git+https://github.com/whs-dot-hk/genco.git?branch=test#1690e8a0e11a753252b8eacbad7046a69ee23260"
 dependencies = [
  "genco-macros",
  "relative-path",
@@ -15,7 +15,7 @@ dependencies = [
 [[package]]
 name = "genco-macros"
 version = "0.17.7"
-source = "git+https://github.com/whs-dot-hk/genco.git?branch=test#b1cd6b77ecd399d4947b54de27b40c6e85ecdb6e"
+source = "git+https://github.com/whs-dot-hk/genco.git?branch=test#1690e8a0e11a753252b8eacbad7046a69ee23260"
 dependencies = [
  "proc-macro2",
  "quote",

@@ -173,7 +173,6 @@ impl Import {
             name: format!("cell.nixosModules.{}", name),
         }
     }
-
 }
 
 impl FormatInto<Nix> for Import {
@@ -187,6 +186,15 @@ impl FormatInto<Nix> for Import {
 }
 
 pub struct Imports(pub Vec<Import>);
+
+impl IntoIterator for Imports {
+    type Item = Import;
+    type IntoIter = std::vec::IntoIter<Self::Item>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.0.into_iter()
+    }
+}
 
 impl FormatInto<Nix> for Imports {
     /// ```
@@ -214,7 +222,7 @@ impl FormatInto<Nix> for Imports {
     fn format_into(self, tokens: &mut Tokens<Nix>) {
         tokens.append("[");
         tokens.indent();
-        for import in self.0 {
+        for import in self {
             tokens.append(import);
             tokens.push();
         }
