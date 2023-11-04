@@ -3,6 +3,7 @@ use genco::prelude::*;
 
 pub enum ConfigurationType {
     Import(Import),
+    Dummy,
 }
 
 impl From<Import> for ConfigurationType {
@@ -52,7 +53,7 @@ impl Configurations {
     {
         let mut configurations = Vec::new();
         for import in imports {
-            configurations.push(ConfigurationType::Import(import))
+            configurations.push(ConfigurationType::from(import))
         }
         Self {
             configurations: configurations,
@@ -84,15 +85,15 @@ impl IntoIterator for Configurations {
     }
 }
 
-impl Into<Imports> for Configurations {
-    fn into(self) -> Imports {
+impl From<Configurations> for Imports {
+    fn from(configurations: Configurations) -> Self {
         let mut imports = Vec::new();
-        for configurations in self {
-            match configurations {
-                ConfigurationType::Import(import) => imports.push(import),
+        for configuration in configurations {
+            if let ConfigurationType::Import(import) = configuration {
+                imports.push(import)
             }
         }
-        Imports(imports)
+        Self(imports)
     }
 }
 
@@ -129,7 +130,7 @@ impl FormatInto<Nix> for Configurations {
     /// # Ok::<_, genco::fmt::Error>(())
     /// ```
     fn format_into(self, tokens: &mut Tokens<Nix>) {
-        let imports: Imports = self.into();
+        let imports = Imports::from(self);
         quote_in! { *tokens =>
             {
                 imports = $(imports);
