@@ -3,7 +3,7 @@ use genco::prelude::*;
 
 pub struct Import {
     pub inherit: Option<Inherit>,
-    pub name: String,
+    pub name: nix::Tokens,
 }
 
 impl Import {
@@ -35,7 +35,7 @@ impl Import {
                 name: var.to_string(),
                 path: path.to_string(),
             }),
-            name: name.to_string(),
+            name: quote!($name),
         }
     }
 
@@ -60,7 +60,7 @@ impl Import {
     pub fn new1(name: &str) -> Self {
         Self {
             inherit: None,
-            name: name.to_string(),
+            name: quote!($name),
         }
     }
 
@@ -87,7 +87,7 @@ impl Import {
     pub fn disko_module() -> Self {
         Self {
             inherit: Some(Inherit::disko()),
-            name: String::from("nixosModules.disko"),
+            name: quote!(nixosModules.disko),
         }
     }
 
@@ -110,7 +110,7 @@ impl Import {
     pub fn cell_hardware_profiles(name: &str) -> Self {
         Self {
             inherit: None,
-            name: format!("cell.hardwareProfiles.{}", name),
+            name: quote!(cell.hardwareProfiles.$name),
         }
     }
 
@@ -133,7 +133,7 @@ impl Import {
     pub fn cell_nixos_profiles(name: &str) -> Self {
         Self {
             inherit: None,
-            name: format!("cell.nixosProfiles.{}", name),
+            name: quote!(cell.nixosProfiles.$name),
         }
     }
 
@@ -156,21 +156,62 @@ impl Import {
     pub fn cell_disko_configurations(name: &str) -> Self {
         Self {
             inherit: None,
-            name: format!("cell.diskoConfigurations.{}", name),
+            name: quote!(cell.diskoConfigurations.$name),
         }
     }
 
     pub fn cell_home_configurations(name: &str) -> Self {
         Self {
             inherit: None,
-            name: format!("cell.homeConfigurations.{}", name),
+            name: quote!(cell.homeConfigurations.$name),
         }
     }
 
     pub fn cell_nixos_modules(name: &str) -> Self {
         Self {
             inherit: None,
-            name: format!("cell.nixosModules.{}", name),
+            name: quote!(cell.nixosModules.$name),
+        }
+    }
+
+    /// ```
+    /// use genco::prelude::*;
+    /// use honey::hive::*;
+    ///
+    /// let home_manager = Some(Inherit::home_manager());
+    /// let nixpkgs = Inherit::nixpkgs();
+    ///
+    /// let bee = Import::bee(home_manager, nixpkgs, "x86_64-linux");
+    ///
+    /// let toks = quote!($bee);
+    ///
+    /// assert_eq!(
+    ///     vec![
+    ///         "let",
+    ///         "    inherit (inputs) home-manager;",
+    ///         "    inherit (inputs) nixpkgs;",
+    ///         "    bee = {",
+    ///         "        home = home-manager;",
+    ///         "        pkgs = nixpkgs;",
+    ///         "        system = \"x86_64-linux\";",
+    ///         "    };",
+    ///         "in",
+    ///         "",
+    ///         "bee"
+    ///     ],
+    ///     toks.to_file_vec()?
+    /// );
+    /// # Ok::<_, genco::fmt::Error>(())
+    /// ```
+    pub fn bee<M, N>(home_manager: Option<M>, nixpkgs: N, system: &str) -> Self
+    where
+        M: Into<nix::Tokens>,
+        N: Into<nix::Tokens>,
+    {
+        let bee = Variable::bee(home_manager, nixpkgs, system);
+        Self {
+            inherit: None,
+            name: quote!($bee),
         }
     }
 }
