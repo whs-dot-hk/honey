@@ -6,7 +6,7 @@ pub enum ConfigurationType {
 }
 
 pub struct Configurations {
-    pub imports: Imports,
+    pub configurations: Vec<ConfigurationType>,
     /// Name do **not** included in quote.
     pub name: String,
 }
@@ -17,8 +17,8 @@ impl Configurations {
     /// use honey::hive::*;
     ///
     /// let configurations = Configurations::new("dummy", vec![
-    ///     ConfigurationType::Import(Import::cell_disko_configurations("my-disko-configurations")),
-    ///     ConfigurationType::Import(Import::disko_module()),
+    ///     Import::cell_disko_configurations("my-disko-configurations"),
+    ///     Import::disko_module(),
     /// ]);
     ///
     /// let toks = quote!($configurations);
@@ -40,31 +40,53 @@ impl Configurations {
     /// );
     /// # Ok::<_, genco::fmt::Error>(())
     /// ```
-    pub fn new(name: &str, configurations: Vec<ConfigurationType>) -> Self {
-        let mut imports = Vec::new();
-        for c in configurations {
-            match c {
-                ConfigurationType::Import(import) => imports.push(import),
-            }
+    pub fn new<T>(name: &str, imports: T) -> Self
+    where
+        T: IntoIterator<Item = Import>,
+    {
+        let mut configurations = Vec::new();
+        for import in imports {
+            configurations.push(ConfigurationType::Import(import))
         }
         Self {
-            imports: Imports(imports),
+            configurations: configurations,
             name: String::from(name),
         }
     }
 
     pub fn new_nixos_configurations(name: &str) -> Self {
         Self {
-            imports: Imports(vec![
-                Import::cell_disko_configurations(name),
-                Import::cell_hardware_profiles(name),
-                Import::cell_home_configurations(name),
-                Import::cell_nixos_modules(name),
-                Import::cell_nixos_profiles(name),
-                Import::disko_module(),
-            ]),
+            configurations: vec![
+                ConfigurationType::Import(Import::cell_disko_configurations(name)),
+                ConfigurationType::Import(Import::cell_hardware_profiles(name)),
+                ConfigurationType::Import(Import::cell_home_configurations(name)),
+                ConfigurationType::Import(Import::cell_nixos_modules(name)),
+                ConfigurationType::Import(Import::cell_nixos_profiles(name)),
+                ConfigurationType::Import(Import::disko_module()),
+            ],
             name: String::from(name),
         }
+    }
+}
+
+impl IntoIterator for Configurations {
+    type Item = ConfigurationType;
+    type IntoIter = std::vec::IntoIter<Self::Item>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.configurations.into_iter()
+    }
+}
+
+impl Into<Imports> for Configurations {
+    fn into(self) -> Imports {
+        let mut imports = Vec::new();
+        for configurations in self {
+            match configurations {
+                ConfigurationType::Import(import) => imports.push(import),
+            }
+        }
+        Imports(imports)
     }
 }
 
@@ -74,10 +96,10 @@ impl FormatInto<Nix> for Configurations {
     /// use honey::hive::*;
     ///
     /// let configurations = Configurations {
-    ///     imports: Imports(vec![
-    ///         Import::cell_disko_configurations("my-disko-configurations"),
-    ///         Import::disko_module(),
-    ///     ]),
+    ///     configurations: vec![
+    ///         ConfigurationType::Import(Import::cell_disko_configurations("my-disko-configurations")),
+    ///         ConfigurationType::Import(Import::disko_module()),
+    ///     ],
     ///     name: String::from("dummy"),
     /// };
     ///
@@ -101,9 +123,10 @@ impl FormatInto<Nix> for Configurations {
     /// # Ok::<_, genco::fmt::Error>(())
     /// ```
     fn format_into(self, tokens: &mut Tokens<Nix>) {
+        let imports: Imports = self.into();
         quote_in! { *tokens =>
             {
-                imports = $(self.imports);
+                imports = $(imports);
             }
         }
     }
