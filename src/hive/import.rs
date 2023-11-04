@@ -178,10 +178,7 @@ impl Import {
     /// use genco::prelude::*;
     /// use honey::hive::*;
     ///
-    /// let home_manager = Some(Inherit::home_manager());
-    /// let nixpkgs = Inherit::nixpkgs();
-    ///
-    /// let bee = Import::bee(home_manager, nixpkgs, "x86_64-linux");
+    /// let bee = Import::bee();
     ///
     /// let toks = quote!($bee);
     ///
@@ -203,7 +200,86 @@ impl Import {
     /// );
     /// # Ok::<_, genco::fmt::Error>(())
     /// ```
-    pub fn bee<M, N>(home_manager: Option<M>, nixpkgs: N, system: &str) -> Self
+    pub fn bee() -> Self {
+        let home_manager = Some(Inherit::home_manager());
+        let nixpkgs = Inherit::nixpkgs();
+        let bee = Variable::bee(home_manager, nixpkgs, "x86_64-linux");
+        Self {
+            inherit: None,
+            name: quote!($bee),
+        }
+    }
+
+    /// ```
+    /// use genco::prelude::*;
+    /// use honey::hive::*;
+    ///
+    /// let bee = Import::bee2(Some("home-23-05"), "nixos-23-05", "x86_64-linux");
+    ///
+    /// let toks = quote!($bee);
+    ///
+    /// assert_eq!(
+    ///     vec![
+    ///         "let",
+    ///         "    inherit (inputs) home-23-05;",
+    ///         "    inherit (inputs) nixos-23-05;",
+    ///         "    bee = {",
+    ///         "        home = home-23-05;",
+    ///         "        pkgs = nixos-23-05;",
+    ///         "        system = \"x86_64-linux\";",
+    ///         "    };",
+    ///         "in",
+    ///         "",
+    ///         "bee"
+    ///     ],
+    ///     toks.to_file_vec()?
+    /// );
+    /// # Ok::<_, genco::fmt::Error>(())
+    /// ```
+    pub fn bee2(home_manager: Option<&str>, nixpkgs: &str, system: &str) -> Self {
+        let home_manager = if let Some(home_manager) = home_manager {
+            Some(Inherit::new("inputs", home_manager))
+        } else {
+            None
+        };
+        let nixpkgs = Inherit::new("inputs", nixpkgs);
+        let bee = Variable::bee(home_manager, nixpkgs, system);
+        Self {
+            inherit: None,
+            name: quote!($bee),
+        }
+    }
+
+    /// ```
+    /// use genco::prelude::*;
+    /// use honey::hive::*;
+    ///
+    /// let home_manager = Some(Inherit::home_manager());
+    /// let nixpkgs = Inherit::nixpkgs();
+    ///
+    /// let bee = Import::bee3(home_manager, nixpkgs, "x86_64-linux");
+    ///
+    /// let toks = quote!($bee);
+    ///
+    /// assert_eq!(
+    ///     vec![
+    ///         "let",
+    ///         "    inherit (inputs) home-manager;",
+    ///         "    inherit (inputs) nixpkgs;",
+    ///         "    bee = {",
+    ///         "        home = home-manager;",
+    ///         "        pkgs = nixpkgs;",
+    ///         "        system = \"x86_64-linux\";",
+    ///         "    };",
+    ///         "in",
+    ///         "",
+    ///         "bee"
+    ///     ],
+    ///     toks.to_file_vec()?
+    /// );
+    /// # Ok::<_, genco::fmt::Error>(())
+    /// ```
+    pub fn bee3<M, N>(home_manager: Option<M>, nixpkgs: N, system: &str) -> Self
     where
         M: Into<nix::Tokens>,
         N: Into<nix::Tokens>,

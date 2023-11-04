@@ -62,8 +62,6 @@ impl Configurations {
     }
 
     pub fn new_nixos_configurations(name: &str) -> Self {
-        let home_manager = Some(Inherit::home_manager());
-        let nixpkgs = Inherit::nixpkgs();
         Self {
             configurations: vec![
                 Import::cell_disko_configurations(name).into(),
@@ -72,7 +70,7 @@ impl Configurations {
                 Import::cell_nixos_modules(name).into(),
                 Import::cell_nixos_profiles(name).into(),
                 Import::disko_module().into(),
-                Import::bee(home_manager, nixpkgs, "x86_64-linux").into(),
+                Import::bee().into(),
             ],
             name: String::from(name),
         }
