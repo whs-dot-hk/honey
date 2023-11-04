@@ -5,6 +5,12 @@ pub enum ConfigurationType {
     Import(Import),
 }
 
+impl From<Import> for ConfigurationType {
+    fn from(import: Import) -> Self {
+        Self::Import(import)
+    }
+}
+
 pub struct Configurations {
     pub configurations: Vec<ConfigurationType>,
     /// Name do **not** included in quote.
@@ -57,12 +63,12 @@ impl Configurations {
     pub fn new_nixos_configurations(name: &str) -> Self {
         Self {
             configurations: vec![
-                ConfigurationType::Import(Import::cell_disko_configurations(name)),
-                ConfigurationType::Import(Import::cell_hardware_profiles(name)),
-                ConfigurationType::Import(Import::cell_home_configurations(name)),
-                ConfigurationType::Import(Import::cell_nixos_modules(name)),
-                ConfigurationType::Import(Import::cell_nixos_profiles(name)),
-                ConfigurationType::Import(Import::disko_module()),
+                Import::cell_disko_configurations(name).into(),
+                Import::cell_hardware_profiles(name).into(),
+                Import::cell_home_configurations(name).into(),
+                Import::cell_nixos_modules(name).into(),
+                Import::cell_nixos_profiles(name).into(),
+                Import::disko_module().into(),
             ],
             name: String::from(name),
         }

@@ -115,10 +115,10 @@ impl Inherit {
     }
 }
 
-impl Into<nix::Tokens> for Inherit {
-    fn into(self) -> nix::Tokens {
+impl From<Inherit> for nix::Tokens {
+    fn from(inherit: Inherit) -> Self {
         let mut tokens = nix::Tokens::new();
-        tokens.append(self);
+        tokens.append(inherit);
         tokens
     }
 }
