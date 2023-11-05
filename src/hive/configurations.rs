@@ -142,6 +142,51 @@ impl FormatInto<Nix> for Configurations {
 
 pub struct NixosConfigurations(pub Vec<Configurations>);
 
+impl NixosConfigurations {
+    /// ```
+    /// use genco::prelude::*;
+    /// use honey::hive::*;
+    ///
+    /// let nixos_configurations = NixosConfigurations::new("machine1");
+    ///
+    /// let toks = quote!($nixos_configurations);
+    ///
+    /// assert_eq!(
+    ///     vec![
+    ///         "let",
+    ///         "    inherit (inputs) disko;",
+    ///         "    inherit (inputs) home-manager;",
+    ///         "    inherit (inputs) nixpkgs;",
+    ///         "    bee = {",
+    ///         "        home = home-manager;",
+    ///         "        pkgs = nixpkgs;",
+    ///         "        system = \"x86_64-linux\";",
+    ///         "    };",
+    ///         "in",
+    ///         "",
+    ///         "{",
+    ///         "    machine1 = {",
+    ///         "        imports = [",
+    ///         "            bee",
+    ///         "            cell.diskoConfigurations.machine1",
+    ///         "            cell.hardwareProfiles.machine1",
+    ///         "            cell.homeConfigurations.machine1",
+    ///         "            cell.nixosModules.machine1",
+    ///         "            cell.nixosProfiles.machine1",
+    ///         "            disko.nixosModules.disko",
+    ///         "        ];",
+    ///         "    };",
+    ///         "}",
+    ///     ],
+    ///     toks.to_file_vec()?
+    /// );
+    /// # Ok::<_, genco::fmt::Error>(())
+    /// ```
+    pub fn new(name: &str) -> Self {
+        Self(vec![Configurations::new_nixos_configurations(name)])
+    }
+}
+
 impl FormatInto<Nix> for NixosConfigurations {
     /// ```
     /// use genco::prelude::*;
