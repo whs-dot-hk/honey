@@ -186,10 +186,9 @@ impl Import {
     ///     vec![
     ///         "let",
     ///         "    inherit (inputs) home-manager;",
-    ///         "    inherit (inputs) nixpkgs;",
     ///         "    bee = {",
     ///         "        home = home-manager;",
-    ///         "        pkgs = nixpkgs;",
+    ///         "        pkgs = cell.pkgs;",
     ///         "        system = \"x86_64-linux\";",
     ///         "    };",
     ///         "in",
@@ -202,7 +201,7 @@ impl Import {
     /// ```
     pub fn bee() -> Self {
         let home_manager = Some(Inherit::home_manager());
-        let nixpkgs = Inherit::nixpkgs();
+        let nixpkgs = quote!(cell.pkgs);
         let bee = Variable::bee(home_manager, nixpkgs, "x86_64-linux");
         Self {
             inherit: None,
