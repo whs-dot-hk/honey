@@ -194,7 +194,7 @@ impl Import {
     ///         "    };",
     ///         "in",
     ///         "",
-    ///         "bee"
+    ///         "{inherit bee;}"
     ///     ],
     ///     toks.to_file_vec()?
     /// );
@@ -206,7 +206,7 @@ impl Import {
         let bee = Variable::bee(home_manager, nixpkgs, "x86_64-linux");
         Self {
             inherit: None,
-            name: quote!($bee),
+            name: quote!({inherit $bee;}),
         }
     }
 
@@ -230,7 +230,7 @@ impl Import {
     ///         "    };",
     ///         "in",
     ///         "",
-    ///         "bee"
+    ///         "{inherit bee;}"
     ///     ],
     ///     toks.to_file_vec()?
     /// );
@@ -246,7 +246,7 @@ impl Import {
         let bee = Variable::bee(home_manager, nixpkgs, system);
         Self {
             inherit: None,
-            name: quote!($bee),
+            name: quote!({inherit $bee;}),
         }
     }
 
@@ -273,7 +273,7 @@ impl Import {
     ///         "    };",
     ///         "in",
     ///         "",
-    ///         "bee"
+    ///         "{inherit bee;}"
     ///     ],
     ///     toks.to_file_vec()?
     /// );
@@ -287,7 +287,7 @@ impl Import {
         let bee = Variable::bee(home_manager, nixpkgs, system);
         Self {
             inherit: None,
-            name: quote!($bee),
+            name: quote!({inherit $bee;}),
         }
     }
 }
