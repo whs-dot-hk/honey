@@ -13,7 +13,7 @@ impl Variable {
     /// let home_manager = Some(Inherit::home_manager());
     /// let nixpkgs = Inherit::nixpkgs();
     ///
-    /// let bee = Variable::bee(home_manager, nixpkgs, "x86_64-linux");
+    /// let bee = Variable::bee("bee", home_manager, nixpkgs, "x86_64-linux");
     ///
     /// let toks = quote!($bee);
     ///
@@ -23,9 +23,11 @@ impl Variable {
     ///         "    inherit (inputs) home-manager;",
     ///         "    inherit (inputs) nixpkgs;",
     ///         "    bee = {",
-    ///         "        home = home-manager;",
-    ///         "        pkgs = nixpkgs;",
-    ///         "        system = \"x86_64-linux\";",
+    ///         "        bee = {",
+    ///         "            home = home-manager;",
+    ///         "            pkgs = nixpkgs;",
+    ///         "            system = \"x86_64-linux\";",
+    ///         "        };",
     ///         "    };",
     ///         "in",
     ///         "",
@@ -35,20 +37,22 @@ impl Variable {
     /// );
     /// # Ok::<_, genco::fmt::Error>(())
     /// ```
-    pub fn bee<M, N>(home_manager: Option<M>, nixpkgs: N, system: &str) -> Self
+    pub fn bee<M, N>(name: &str, home_manager: Option<M>, nixpkgs: N, system: &str) -> Self
     where
         M: Into<nix::Tokens>,
         N: Into<nix::Tokens>,
     {
         Self {
-            name: String::from("bee"),
+            name: name.to_string(),
             value: quote! {
                 {
-                    $(if let Some(home_manager) = home_manager {
-                        home = $(home_manager.into());
-                    })
-                    pkgs = $(nixpkgs.into());
-                    system = $(quoted(system));
+                    bee = {
+                        $(if let Some(home_manager) = home_manager {
+                            home = $(home_manager.into());
+                        })
+                        pkgs = $(nixpkgs.into());
+                        system = $(quoted(system));
+                    };
                 }
             },
         }

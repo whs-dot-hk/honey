@@ -178,7 +178,7 @@ impl Import {
     /// use genco::prelude::*;
     /// use honey::hive::*;
     ///
-    /// let bee = Import::bee();
+    /// let bee = Import::bee("machine1");
     ///
     /// let toks = quote!($bee);
     ///
@@ -186,26 +186,28 @@ impl Import {
     ///     vec![
     ///         "let",
     ///         "    inherit (inputs) home-manager;",
-    ///         "    bee = {",
-    ///         "        home = home-manager;",
-    ///         "        pkgs = cell.pkgs;",
-    ///         "        system = \"x86_64-linux\";",
+    ///         "    bee-machine1 = {",
+    ///         "        bee = {",
+    ///         "            home = home-manager;",
+    ///         "            pkgs = cell.pkgs.machine1;",
+    ///         "            system = \"x86_64-linux\";",
+    ///         "        };",
     ///         "    };",
     ///         "in",
     ///         "",
-    ///         "{inherit bee;}"
+    ///         "bee-machine1"
     ///     ],
     ///     toks.to_file_vec()?
     /// );
     /// # Ok::<_, genco::fmt::Error>(())
     /// ```
-    pub fn bee() -> Self {
+    pub fn bee(name: &str) -> Self {
         let home_manager = Some(Inherit::home_manager());
-        let nixpkgs = quote!(cell.pkgs);
-        let bee = Variable::bee(home_manager, nixpkgs, "x86_64-linux");
+        let nixpkgs = quote!(cell.pkgs.$name);
+        let bee = Variable::bee(&format!("bee-{}", name), home_manager, nixpkgs, "x86_64-linux");
         Self {
             inherit: None,
-            name: quote!({inherit $bee;}),
+            name: quote!($bee),
         }
     }
 
@@ -223,13 +225,15 @@ impl Import {
     ///         "    inherit (inputs) home-23-05;",
     ///         "    inherit (inputs) nixos-23-05;",
     ///         "    bee = {",
-    ///         "        home = home-23-05;",
-    ///         "        pkgs = nixos-23-05;",
-    ///         "        system = \"x86_64-linux\";",
+    ///         "        bee = {",
+    ///         "            home = home-23-05;",
+    ///         "            pkgs = nixos-23-05;",
+    ///         "            system = \"x86_64-linux\";",
+    ///         "        };",
     ///         "    };",
     ///         "in",
     ///         "",
-    ///         "{inherit bee;}"
+    ///         "bee"
     ///     ],
     ///     toks.to_file_vec()?
     /// );
@@ -242,10 +246,10 @@ impl Import {
             None
         };
         let nixpkgs = Inherit::new("inputs", nixpkgs);
-        let bee = Variable::bee(home_manager, nixpkgs, system);
+        let bee = Variable::bee("bee", home_manager, nixpkgs, system);
         Self {
             inherit: None,
-            name: quote!({inherit $bee;}),
+            name: quote!($bee),
         }
     }
 
@@ -266,13 +270,15 @@ impl Import {
     ///         "    inherit (inputs) home-manager;",
     ///         "    inherit (inputs) nixpkgs;",
     ///         "    bee = {",
-    ///         "        home = home-manager;",
-    ///         "        pkgs = nixpkgs;",
-    ///         "        system = \"x86_64-linux\";",
+    ///         "        bee = {",
+    ///         "            home = home-manager;",
+    ///         "            pkgs = nixpkgs;",
+    ///         "            system = \"x86_64-linux\";",
+    ///         "        };",
     ///         "    };",
     ///         "in",
     ///         "",
-    ///         "{inherit bee;}"
+    ///         "bee"
     ///     ],
     ///     toks.to_file_vec()?
     /// );
@@ -283,10 +289,10 @@ impl Import {
         M: Into<nix::Tokens>,
         N: Into<nix::Tokens>,
     {
-        let bee = Variable::bee(home_manager, nixpkgs, system);
+        let bee = Variable::bee("bee", home_manager, nixpkgs, system);
         Self {
             inherit: None,
-            name: quote!({inherit $bee;}),
+            name: quote!($bee),
         }
     }
 }
