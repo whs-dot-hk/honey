@@ -186,6 +186,75 @@ impl NixosConfigurations {
     pub fn new(name: &str) -> Self {
         Self(vec![Configurations::new_nixos_configurations(name)])
     }
+
+    /// ```
+    /// use genco::prelude::*;
+    /// use honey::hive::*;
+    ///
+    /// let nixos_configurations = NixosConfigurations::new1(vec![
+    ///     "machine1",
+    ///     "machine2"
+    /// ]);
+    ///
+    /// let toks = quote!($nixos_configurations);
+    ///
+    /// assert_eq!(
+    ///     vec![
+    ///         "let",
+    ///         "    inherit (inputs) disko;",
+    ///         "    inherit (inputs) home-manager;",
+    ///         "    bee-machine1 = {",
+    ///         "        bee = {",
+    ///         "            home = home-manager;",
+    ///         "            pkgs = cell.pkgs.machine1;",
+    ///         "            system = \"x86_64-linux\";",
+    ///         "        };",
+    ///         "    };",
+    ///         "    bee-machine2 = {",
+    ///         "        bee = {",
+    ///         "            home = home-manager;",
+    ///         "            pkgs = cell.pkgs.machine2;",
+    ///         "            system = \"x86_64-linux\";",
+    ///         "        };",
+    ///         "    };",
+    ///         "in",
+    ///         "",
+    ///         "{",
+    ///         "    machine1 = {",
+    ///         "        imports = [",
+    ///         "            bee-machine1",
+    ///         "            cell.diskoConfigurations.machine1",
+    ///         "            cell.hardwareProfiles.machine1",
+    ///         "            cell.homeConfigurations.machine1",
+    ///         "            cell.nixosModules.machine1",
+    ///         "            cell.nixosProfiles.machine1",
+    ///         "            disko.nixosModules.disko",
+    ///         "        ];",
+    ///         "    };",
+    ///         "    machine2 = {",
+    ///         "        imports = [",
+    ///         "            bee-machine2",
+    ///         "            cell.diskoConfigurations.machine2",
+    ///         "            cell.hardwareProfiles.machine2",
+    ///         "            cell.homeConfigurations.machine2",
+    ///         "            cell.nixosModules.machine2",
+    ///         "            cell.nixosProfiles.machine2",
+    ///         "            disko.nixosModules.disko",
+    ///         "        ];",
+    ///         "    };",
+    ///         "}",
+    ///     ],
+    ///     toks.to_file_vec()?
+    /// );
+    /// # Ok::<_, genco::fmt::Error>(())
+    /// ```
+    pub fn new1(names: Vec<&str>) -> Self {
+        let mut configurations = Vec::new();
+        for name in names {
+            configurations.push(Configurations::new_nixos_configurations(name))
+        }
+        Self(configurations)
+    }
 }
 
 impl FormatInto<Nix> for NixosConfigurations {

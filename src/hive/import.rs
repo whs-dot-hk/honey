@@ -204,7 +204,12 @@ impl Import {
     pub fn bee(name: &str) -> Self {
         let home_manager = Some(Inherit::home_manager());
         let nixpkgs = quote!(cell.pkgs.$name);
-        let bee = Variable::bee(&format!("bee-{}", name), home_manager, nixpkgs, "x86_64-linux");
+        let bee = Variable::bee(
+            &format!("bee-{}", name),
+            home_manager,
+            nixpkgs,
+            "x86_64-linux",
+        );
         Self {
             inherit: None,
             name: quote!($bee),
