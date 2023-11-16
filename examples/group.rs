@@ -19,6 +19,8 @@ fn template(name: &str) -> nix::Tokens {
         }
         tokens.push();
     }
+    tokens.unindent();
+    tokens.append("}");
     tokens
 }
 
