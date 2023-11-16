@@ -220,7 +220,7 @@ impl Import {
     /// use genco::prelude::*;
     /// use honey::hive::*;
     ///
-    /// let bee = Import::bee1(Some("home-23-05"), "nixos-23-05", "x86_64-linux");
+    /// let bee = Import::bee1("machine1", Some("home-23-05"), "nixos-23-05", "x86_64-linux");
     ///
     /// let toks = quote!($bee);
     ///
@@ -229,7 +229,7 @@ impl Import {
     ///         "let",
     ///         "    inherit (inputs) home-23-05;",
     ///         "    inherit (inputs) nixos-23-05;",
-    ///         "    bee = {",
+    ///         "    bee-machine1 = {",
     ///         "        bee = {",
     ///         "            home = home-23-05;",
     ///         "            pkgs = nixos-23-05.legacyPackages;",
@@ -238,13 +238,13 @@ impl Import {
     ///         "    };",
     ///         "in",
     ///         "",
-    ///         "bee"
+    ///         "bee-machine1"
     ///     ],
     ///     toks.to_file_vec()?
     /// );
     /// # Ok::<_, genco::fmt::Error>(())
     /// ```
-    pub fn bee1(home_manager: Option<&str>, nixpkgs: &str, system: &str) -> Self {
+    pub fn bee1(name: &str, home_manager: Option<&str>, nixpkgs: &str, system: &str) -> Self {
         let home_manager = if let Some(home_manager) = home_manager {
             Some(Inherit::new("inputs", home_manager))
         } else {
@@ -252,7 +252,7 @@ impl Import {
         };
         let nixpkgs = Inherit::new("inputs", nixpkgs);
         let pkgs = quote!($nixpkgs.legacyPackages);
-        let bee = Variable::bee("bee", home_manager, pkgs, system);
+        let bee = Variable::bee(&format!("bee-{}", name), home_manager, pkgs, system);
         Self {
             inherit: None,
             name: quote!($bee),

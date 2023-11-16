@@ -75,6 +75,67 @@ impl Configurations {
             name: String::from(name),
         }
     }
+
+    /// ```
+    /// use genco::prelude::*;
+    /// use honey::hive::*;
+    ///
+    /// let configurations = Configurations::new_nixos_configurations1("machine1", Some("home-23-05"), "nixos-23-05", "x86_64-linux");
+    ///
+    /// let toks = quote!($configurations);
+    ///
+    /// assert_eq!(
+    ///     vec![
+    ///         "let",
+    ///         "    inherit (inputs) disko;",
+    ///         "    inherit (inputs) home-23-05;",
+    ///         "    inherit (inputs) nixos-23-05;",
+    ///         "    bee-machine1 = {",
+    ///         "        bee = {",
+    ///         "            home = home-23-05;",
+    ///         "            pkgs = nixos-23-05.legacyPackages;",
+    ///         "            system = \"x86_64-linux\";",
+    ///         "        };",
+    ///         "    };",
+    ///         "in",
+    ///         "",
+    ///         "{",
+    ///         "    imports = [",
+    ///         "        bee-machine1",
+    ///         "        cell.diskoConfigurations.machine1",
+    ///         "        cell.hardwareProfiles.machine1",
+    ///         "        cell.homeConfigurations.machine1",
+    ///         "        cell.nixosModules.machine1",
+    ///         "        cell.nixosProfiles.machine1",
+    ///         "        disko.nixosModules.disko",
+    ///         "    ];",
+    ///         "}",
+    ///     ],
+    ///     toks.to_file_vec()?
+    /// );
+    /// # Ok::<_, genco::fmt::Error>(())
+    /// ```
+    pub fn new_nixos_configurations1(
+        name: &str,
+        home_manager: Option<&str>,
+        nixpkgs: &str,
+        system: &str,
+    ) -> Self {
+        let mut imports = Vec::new();
+        imports.push(Import::bee1(name, home_manager, nixpkgs, system));
+        imports.push(Import::cell_disko_configurations(name));
+        imports.push(Import::cell_hardware_profiles(name));
+        if let Some(_) = home_manager {
+            imports.push(Import::cell_home_configurations(name));
+        }
+        imports.push(Import::cell_nixos_modules(name));
+        imports.push(Import::cell_nixos_profiles(name));
+        imports.push(Import::disko_module());
+        Self {
+            configurations: imports.into_iter().map(|import| import.into()).collect(),
+            name: String::from(name),
+        }
+    }
 }
 
 impl IntoIterator for Configurations {
@@ -191,10 +252,7 @@ impl NixosConfigurations {
     /// use genco::prelude::*;
     /// use honey::hive::*;
     ///
-    /// let nixos_configurations = NixosConfigurations::new1(vec![
-    ///     "machine1",
-    ///     "machine2"
-    /// ]);
+    /// let nixos_configurations = NixosConfigurations::new1("machine", 2, Some("home-23-05"), "nixos-23-05", "x86_64-linux");
     ///
     /// let toks = quote!($nixos_configurations);
     ///
@@ -202,43 +260,44 @@ impl NixosConfigurations {
     ///     vec![
     ///         "let",
     ///         "    inherit (inputs) disko;",
-    ///         "    inherit (inputs) home-manager;",
-    ///         "    bee-machine1 = {",
+    ///         "    inherit (inputs) home-23-05;",
+    ///         "    inherit (inputs) nixos-23-05;",
+    ///         "    bee-machine00 = {",
     ///         "        bee = {",
-    ///         "            home = home-manager;",
-    ///         "            pkgs = cell.pkgs.machine1;",
+    ///         "            home = home-23-05;",
+    ///         "            pkgs = nixos-23-05.legacyPackages;",
     ///         "            system = \"x86_64-linux\";",
     ///         "        };",
     ///         "    };",
-    ///         "    bee-machine2 = {",
+    ///         "    bee-machine01 = {",
     ///         "        bee = {",
-    ///         "            home = home-manager;",
-    ///         "            pkgs = cell.pkgs.machine2;",
+    ///         "            home = home-23-05;",
+    ///         "            pkgs = nixos-23-05.legacyPackages;",
     ///         "            system = \"x86_64-linux\";",
     ///         "        };",
     ///         "    };",
     ///         "in",
     ///         "",
     ///         "{",
-    ///         "    machine1 = {",
+    ///         "    machine00 = {",
     ///         "        imports = [",
-    ///         "            bee-machine1",
-    ///         "            cell.diskoConfigurations.machine1",
-    ///         "            cell.hardwareProfiles.machine1",
-    ///         "            cell.homeConfigurations.machine1",
-    ///         "            cell.nixosModules.machine1",
-    ///         "            cell.nixosProfiles.machine1",
+    ///         "            bee-machine00",
+    ///         "            cell.diskoConfigurations.machine00",
+    ///         "            cell.hardwareProfiles.machine00",
+    ///         "            cell.homeConfigurations.machine00",
+    ///         "            cell.nixosModules.machine00",
+    ///         "            cell.nixosProfiles.machine00",
     ///         "            disko.nixosModules.disko",
     ///         "        ];",
     ///         "    };",
-    ///         "    machine2 = {",
+    ///         "    machine01 = {",
     ///         "        imports = [",
-    ///         "            bee-machine2",
-    ///         "            cell.diskoConfigurations.machine2",
-    ///         "            cell.hardwareProfiles.machine2",
-    ///         "            cell.homeConfigurations.machine2",
-    ///         "            cell.nixosModules.machine2",
-    ///         "            cell.nixosProfiles.machine2",
+    ///         "            bee-machine01",
+    ///         "            cell.diskoConfigurations.machine01",
+    ///         "            cell.hardwareProfiles.machine01",
+    ///         "            cell.homeConfigurations.machine01",
+    ///         "            cell.nixosModules.machine01",
+    ///         "            cell.nixosProfiles.machine01",
     ///         "            disko.nixosModules.disko",
     ///         "        ];",
     ///         "    };",
@@ -248,10 +307,22 @@ impl NixosConfigurations {
     /// );
     /// # Ok::<_, genco::fmt::Error>(())
     /// ```
-    pub fn new1(names: Vec<&str>) -> Self {
+    pub fn new1(
+        prefix: &str,
+        number: u32,
+        home_manager: Option<&str>,
+        nixpkgs: &str,
+        system: &str,
+    ) -> Self {
         let mut configurations = Vec::new();
-        for name in names {
-            configurations.push(Configurations::new_nixos_configurations(name))
+        for i in 0..number {
+            let name = &format!("{}{:02}", prefix, i);
+            configurations.push(Configurations::new_nixos_configurations1(
+                name,
+                home_manager,
+                nixpkgs,
+                system,
+            ))
         }
         Self(configurations)
     }

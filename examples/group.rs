@@ -23,14 +23,15 @@ fn template(name: &str) -> nix::Tokens {
 }
 
 fn main() -> anyhow::Result<()> {
-    let nixos_configurations = NixosConfigurations::new1(vec!["machine01", "machine02"]);
+    let nixos_configurations =
+        NixosConfigurations::new1("machine", 2, None, "nixos-23-05", "aarch64-linux");
 
     let tokens = quote!($nixos_configurations);
 
     let disko_configurations = template("diskoConfigurations");
     let hardware_profiles = template("hardwareProfiles");
     let nixos_modules = template("nixosModules");
-    let nixos_profiles  = template("nixosProfiles");
+    let nixos_profiles = template("nixosProfiles");
 
     let tokens2 = quote!($disko_configurations);
     let tokens3 = quote!($hardware_profiles);
