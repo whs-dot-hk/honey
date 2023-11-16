@@ -13,7 +13,7 @@ fn template(prefix: &str, name: &str, number: u32) -> nix::Tokens {
         quote_in! { tokens =>
             $machine_name = {
                 imports = [
-                    $group.$name.$machine_name
+                    $group.$name.myGroup
                 ];
             };
         }
