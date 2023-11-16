@@ -220,7 +220,7 @@ impl Import {
     /// use genco::prelude::*;
     /// use honey::hive::*;
     ///
-    /// let bee = Import::bee2(Some("home-23-05"), "nixos-23-05", "x86_64-linux");
+    /// let bee = Import::bee1(Some("home-23-05"), "nixos-23-05", "x86_64-linux");
     ///
     /// let toks = quote!($bee);
     ///
@@ -232,7 +232,7 @@ impl Import {
     ///         "    bee = {",
     ///         "        bee = {",
     ///         "            home = home-23-05;",
-    ///         "            pkgs = nixos-23-05;",
+    ///         "            pkgs = nixos-23-05.legacyPackages;",
     ///         "            system = \"x86_64-linux\";",
     ///         "        };",
     ///         "    };",
@@ -244,14 +244,15 @@ impl Import {
     /// );
     /// # Ok::<_, genco::fmt::Error>(())
     /// ```
-    pub fn bee2(home_manager: Option<&str>, nixpkgs: &str, system: &str) -> Self {
+    pub fn bee1(home_manager: Option<&str>, nixpkgs: &str, system: &str) -> Self {
         let home_manager = if let Some(home_manager) = home_manager {
             Some(Inherit::new("inputs", home_manager))
         } else {
             None
         };
         let nixpkgs = Inherit::new("inputs", nixpkgs);
-        let bee = Variable::bee("bee", home_manager, nixpkgs, system);
+        let pkgs = quote!($nixpkgs.legacyPackages);
+        let bee = Variable::bee("bee", home_manager, pkgs, system);
         Self {
             inherit: None,
             name: quote!($bee),
@@ -265,7 +266,7 @@ impl Import {
     /// let home_manager = Some(Inherit::home_manager());
     /// let nixpkgs = Inherit::nixpkgs();
     ///
-    /// let bee = Import::bee3(home_manager, nixpkgs, "x86_64-linux");
+    /// let bee = Import::bee2(home_manager, nixpkgs, "x86_64-linux");
     ///
     /// let toks = quote!($bee);
     ///
@@ -289,7 +290,7 @@ impl Import {
     /// );
     /// # Ok::<_, genco::fmt::Error>(())
     /// ```
-    pub fn bee3<M, N>(home_manager: Option<M>, nixpkgs: N, system: &str) -> Self
+    pub fn bee2<M, N>(home_manager: Option<M>, nixpkgs: N, system: &str) -> Self
     where
         M: Into<nix::Tokens>,
         N: Into<nix::Tokens>,
