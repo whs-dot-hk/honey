@@ -19,6 +19,11 @@ impl Import {
     ///
     /// assert_eq!(
     ///     vec![
+    ///         "{",
+    ///         "    inputs,",
+    ///         "    ...",
+    ///         "}:",
+    ///         "",
     ///         "let",
     ///         "    inherit (inputs) disko;",
     ///         "in",
@@ -51,6 +56,10 @@ impl Import {
     ///
     /// assert_eq!(
     ///     vec![
+    ///         "{",
+    ///         "    ...",
+    ///         "}:",
+    ///         "",
     ///         "cell.homeConfigurations.my-home-configurations",
     ///     ],
     ///     toks.to_file_vec()?
@@ -74,6 +83,11 @@ impl Import {
     ///
     /// assert_eq!(
     ///     vec![
+    ///         "{",
+    ///         "    inputs,",
+    ///         "    ...",
+    ///         "}:",
+    ///         "",
     ///         "let",
     ///         "    inherit (inputs) disko;",
     ///         "in",
@@ -101,6 +115,10 @@ impl Import {
     ///
     /// assert_eq!(
     ///     vec![
+    ///         "{",
+    ///         "    ...",
+    ///         "}:",
+    ///         "",
     ///         "cell.hardwareProfiles.my-hardware-profile",
     ///     ],
     ///     toks.to_file_vec()?
@@ -124,6 +142,10 @@ impl Import {
     ///
     /// assert_eq!(
     ///     vec![
+    ///         "{",
+    ///         "    ...",
+    ///         "}:",
+    ///         "",
     ///         "cell.nixosProfiles.my-nixos-profile",
     ///     ],
     ///     toks.to_file_vec()?
@@ -147,6 +169,10 @@ impl Import {
     ///
     /// assert_eq!(
     ///     vec![
+    ///         "{",
+    ///         "    ...",
+    ///         "}:",
+    ///         "",
     ///         "cell.diskoConfigurations.my-disko-configurations",
     ///     ],
     ///     toks.to_file_vec()?
@@ -184,6 +210,11 @@ impl Import {
     ///
     /// assert_eq!(
     ///     vec![
+    ///         "{",
+    ///         "    inputs,",
+    ///         "    ...",
+    ///         "}:",
+    ///         "",
     ///         "let",
     ///         "    inherit (inputs) home-manager;",
     ///         "    bee-machine1 = {",
@@ -226,6 +257,11 @@ impl Import {
     ///
     /// assert_eq!(
     ///     vec![
+    ///         "{",
+    ///         "    inputs,",
+    ///         "    ...",
+    ///         "}:",
+    ///         "",
     ///         "let",
     ///         "    inherit (inputs) home-23-05;",
     ///         "    inherit (inputs) nixos-23-05;",
@@ -272,6 +308,11 @@ impl Import {
     ///
     /// assert_eq!(
     ///     vec![
+    ///         "{",
+    ///         "    inputs,",
+    ///         "    ...",
+    ///         "}:",
+    ///         "",
     ///         "let",
     ///         "    inherit (inputs) home-manager;",
     ///         "    inherit (inputs) nixpkgs;",
@@ -338,6 +379,10 @@ impl FormatInto<Nix> for Imports {
     ///
     /// assert_eq!(
     ///     vec![
+    ///         "{",
+    ///         "    ...",
+    ///         "}:",
+    ///         "",
     ///         "[",
     ///         "    cell.hardwareProfiles.my-hardware-profile",
     ///         "    cell.nixosProfiles.my-nix-profile",

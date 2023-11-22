@@ -19,6 +19,11 @@ impl Variable {
     ///
     /// assert_eq!(
     ///     vec![
+    ///         "{",
+    ///         "    inputs,",
+    ///         "    ...",
+    ///         "}:",
+    ///         "",
     ///         "let",
     ///         "    inherit (inputs) home-manager;",
     ///         "    inherit (inputs) nixpkgs;",

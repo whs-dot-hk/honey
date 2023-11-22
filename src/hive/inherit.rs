@@ -16,6 +16,11 @@ impl Inherit {
     ///
     /// assert_eq!(
     ///     vec![
+    ///         "{",
+    ///         "    inputs,",
+    ///         "    ...",
+    ///         "}:",
+    ///         "",
     ///         "let",
     ///         "    inherit (inputs) nixpkgs;",
     ///         "in",
@@ -43,6 +48,11 @@ impl Inherit {
     ///
     /// assert_eq!(
     ///     vec![
+    ///         "{",
+    ///         "    inputs,",
+    ///         "    ...",
+    ///         "}:",
+    ///         "",
     ///         "let",
     ///         "    inherit (inputs) nixpkgs;",
     ///         "in",
@@ -70,6 +80,11 @@ impl Inherit {
     ///
     /// assert_eq!(
     ///     vec![
+    ///         "{",
+    ///         "    inputs,",
+    ///         "    ...",
+    ///         "}:",
+    ///         "",
     ///         "let",
     ///         "    inherit (inputs) home-manager;",
     ///         "in",
@@ -97,6 +112,11 @@ impl Inherit {
     ///
     /// assert_eq!(
     ///     vec![
+    ///         "{",
+    ///         "    inputs,",
+    ///         "    ...",
+    ///         "}:",
+    ///         "",
     ///         "let",
     ///         "    inherit (inputs) disko;",
     ///         "in",

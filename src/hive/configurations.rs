@@ -32,6 +32,11 @@ impl Configurations {
     ///
     /// assert_eq!(
     ///     vec![
+    ///         "{",
+    ///         "    inputs,",
+    ///         "    ...",
+    ///         "}:",
+    ///         "",
     ///         "let",
     ///         "    inherit (inputs) disko;",
     ///         "in",
@@ -86,6 +91,11 @@ impl Configurations {
     ///
     /// assert_eq!(
     ///     vec![
+    ///         "{",
+    ///         "    inputs,",
+    ///         "    ...",
+    ///         "}:",
+    ///         "",
     ///         "let",
     ///         "    inherit (inputs) disko;",
     ///         "    inherit (inputs) home-23-05;",
@@ -176,6 +186,11 @@ impl FormatInto<Nix> for Configurations {
     ///
     /// assert_eq!(
     ///     vec![
+    ///         "{",
+    ///         "    inputs,",
+    ///         "    ...",
+    ///         "}:",
+    ///         "",
     ///         "let",
     ///         "    inherit (inputs) disko;",
     ///         "in",
@@ -214,6 +229,11 @@ impl NixosConfigurations {
     ///
     /// assert_eq!(
     ///     vec![
+    ///         "{",
+    ///         "    inputs,",
+    ///         "    ...",
+    ///         "}:",
+    ///         "",
     ///         "let",
     ///         "    inherit (inputs) disko;",
     ///         "    inherit (inputs) home-manager;",
@@ -258,6 +278,11 @@ impl NixosConfigurations {
     ///
     /// assert_eq!(
     ///     vec![
+    ///         "{",
+    ///         "    inputs,",
+    ///         "    ...",
+    ///         "}:",
+    ///         "",
     ///         "let",
     ///         "    inherit (inputs) disko;",
     ///         "    inherit (inputs) home-23-05;",
@@ -342,6 +367,11 @@ impl FormatInto<Nix> for NixosConfigurations {
     ///
     /// assert_eq!(
     ///     vec![
+    ///         "{",
+    ///         "    inputs,",
+    ///         "    ...",
+    ///         "}:",
+    ///         "",
     ///         "let",
     ///         "    inherit (inputs) disko;",
     ///         "    inherit (inputs) home-manager;",
