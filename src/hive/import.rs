@@ -57,6 +57,7 @@ impl Import {
     /// assert_eq!(
     ///     vec![
     ///         "{",
+    ///         "    cell,",
     ///         "    ...",
     ///         "}:",
     ///         "",
@@ -67,9 +68,12 @@ impl Import {
     /// # Ok::<_, genco::fmt::Error>(())
     /// ```
     pub fn new1(name: &str) -> Self {
+        let s: Vec<&str> = name.split(".").collect();
+        let first = nix::argument(s[0]);
+        let remaining = &s[1..].join(".");
         Self {
             inherit: None,
-            name: quote!($name),
+            name: quote!($first$(if remaining != "" { .$remaining })),
         }
     }
 
@@ -116,6 +120,7 @@ impl Import {
     /// assert_eq!(
     ///     vec![
     ///         "{",
+    ///         "    cell,",
     ///         "    ...",
     ///         "}:",
     ///         "",
@@ -126,9 +131,10 @@ impl Import {
     /// # Ok::<_, genco::fmt::Error>(())
     /// ```
     pub fn cell_hardware_profiles(name: &str) -> Self {
+        let cell = nix::argument("cell");
         Self {
             inherit: None,
-            name: quote!(cell.hardwareProfiles.$name),
+            name: quote!($cell.hardwareProfiles.$name),
         }
     }
 
@@ -143,6 +149,7 @@ impl Import {
     /// assert_eq!(
     ///     vec![
     ///         "{",
+    ///         "    cell,",
     ///         "    ...",
     ///         "}:",
     ///         "",
@@ -153,9 +160,10 @@ impl Import {
     /// # Ok::<_, genco::fmt::Error>(())
     /// ```
     pub fn cell_nixos_profiles(name: &str) -> Self {
+        let cell = nix::argument("cell");
         Self {
             inherit: None,
-            name: quote!(cell.nixosProfiles.$name),
+            name: quote!($cell.nixosProfiles.$name),
         }
     }
 
@@ -170,6 +178,7 @@ impl Import {
     /// assert_eq!(
     ///     vec![
     ///         "{",
+    ///         "    cell,",
     ///         "    ...",
     ///         "}:",
     ///         "",
@@ -180,23 +189,26 @@ impl Import {
     /// # Ok::<_, genco::fmt::Error>(())
     /// ```
     pub fn cell_disko_configurations(name: &str) -> Self {
+        let cell = nix::argument("cell");
         Self {
             inherit: None,
-            name: quote!(cell.diskoConfigurations.$name),
+            name: quote!($cell.diskoConfigurations.$name),
         }
     }
 
     pub fn cell_home_configurations(name: &str) -> Self {
+        let cell = nix::argument("cell");
         Self {
             inherit: None,
-            name: quote!(cell.homeConfigurations.$name),
+            name: quote!($cell.homeConfigurations.$name),
         }
     }
 
     pub fn cell_nixos_modules(name: &str) -> Self {
+        let cell = nix::argument("cell");
         Self {
             inherit: None,
-            name: quote!(cell.nixosModules.$name),
+            name: quote!($cell.nixosModules.$name),
         }
     }
 
@@ -211,6 +223,7 @@ impl Import {
     /// assert_eq!(
     ///     vec![
     ///         "{",
+    ///         "    cell,",
     ///         "    inputs,",
     ///         "    ...",
     ///         "}:",
@@ -233,8 +246,9 @@ impl Import {
     /// # Ok::<_, genco::fmt::Error>(())
     /// ```
     pub fn bee(name: &str) -> Self {
+        let cell = nix::argument("cell");
         let home_manager = Some(Inherit::home_manager());
-        let nixpkgs = quote!(cell.pkgs.$name);
+        let nixpkgs = quote!($cell.pkgs.$name);
         let bee = Variable::bee(
             &format!("bee-{}", name),
             home_manager,
@@ -380,6 +394,7 @@ impl FormatInto<Nix> for Imports {
     /// assert_eq!(
     ///     vec![
     ///         "{",
+    ///         "    cell,",
     ///         "    ...",
     ///         "}:",
     ///         "",

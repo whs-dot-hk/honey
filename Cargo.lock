@@ -11,7 +11,7 @@ checksum = "a4668cab20f66d8d020e1fbc0ebe47217433c1b6c8f2040faf858554e394ace6"
 [[package]]
 name = "genco"
 version = "0.17.8"
-source = "git+https://github.com/whs-dot-hk/genco.git?branch=test#c89a37cd90f882c2344929eadc56e6c9b09ba708"
+source = "git+https://github.com/whs-dot-hk/genco.git?branch=test#74cdbd65a97e80c23537a1e10e962cab2dcac98f"
 dependencies = [
  "genco-macros",
  "relative-path",
@@ -21,7 +21,7 @@ dependencies = [
 [[package]]
 name = "genco-macros"
 version = "0.17.8"
-source = "git+https://github.com/whs-dot-hk/genco.git?branch=test#c89a37cd90f882c2344929eadc56e6c9b09ba708"
+source = "git+https://github.com/whs-dot-hk/genco.git?branch=test#74cdbd65a97e80c23537a1e10e962cab2dcac98f"
 dependencies = [
  "proc-macro2",
  "quote",

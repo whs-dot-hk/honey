@@ -33,6 +33,7 @@ impl Configurations {
     /// assert_eq!(
     ///     vec![
     ///         "{",
+    ///         "    cell,",
     ///         "    inputs,",
     ///         "    ...",
     ///         "}:",
@@ -92,6 +93,7 @@ impl Configurations {
     /// assert_eq!(
     ///     vec![
     ///         "{",
+    ///         "    cell,",
     ///         "    inputs,",
     ///         "    ...",
     ///         "}:",
@@ -187,6 +189,7 @@ impl FormatInto<Nix> for Configurations {
     /// assert_eq!(
     ///     vec![
     ///         "{",
+    ///         "    cell,",
     ///         "    inputs,",
     ///         "    ...",
     ///         "}:",
@@ -230,6 +233,7 @@ impl NixosConfigurations {
     /// assert_eq!(
     ///     vec![
     ///         "{",
+    ///         "    cell,",
     ///         "    inputs,",
     ///         "    ...",
     ///         "}:",
@@ -279,6 +283,7 @@ impl NixosConfigurations {
     /// assert_eq!(
     ///     vec![
     ///         "{",
+    ///         "    cell,",
     ///         "    inputs,",
     ///         "    ...",
     ///         "}:",
@@ -368,6 +373,7 @@ impl FormatInto<Nix> for NixosConfigurations {
     /// assert_eq!(
     ///     vec![
     ///         "{",
+    ///         "    cell,",
     ///         "    inputs,",
     ///         "    ...",
     ///         "}:",
