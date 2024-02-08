@@ -7,4 +7,4 @@ edition = "2021"
 
 [dependencies]
 anyhow = "1.0.75"
-genco = { git = "https://github.com/whs-dot-hk/genco.git", branch = "test", version = "0.17.7" }
+genco = { git = "https://github.com/udoprog/genco.git", version = "0.17.8" }

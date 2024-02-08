@@ -47,7 +47,7 @@ fn main() -> anyhow::Result<()> {
     let mut w = fmt::IoWriter::new(stdout.lock());
 
     let fmt = fmt::Config::from_lang::<Nix>();
-    let config = nix::Config::new();
+    let config = nix::Config::default().with_scoped(true);
 
     tokens.format_file(&mut w.as_formatter(&fmt), &config)?;
     tokens2.format_file(&mut w.as_formatter(&fmt), &config)?;
